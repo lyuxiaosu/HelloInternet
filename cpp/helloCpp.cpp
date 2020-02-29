@@ -16,8 +16,11 @@ using namespace std;
 
 class Client {
 public:
+	//Initialization of Client
 	Client() {
 	}
+
+	//Build a TCP connection with a server
 	void start(string server_ip, int server_port) {
 		char buf[MAXLINE];
 		int connfd;
@@ -29,6 +32,7 @@ public:
 		servaddr.sin_port = htons(server_port);
 		inet_pton(AF_INET, server_ip.c_str(), &servaddr.sin_addr);
 
+		//connect a specified server
 		if (connect(connfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
 			perror("connect error\n");
 		} else {
@@ -36,9 +40,12 @@ public:
 			write_read(connfd);     /* do it all */
 		}
 	}
+
 	~Client() {
 	}
+
 private:
+	//send a msg to the server and read the response from the server
 	void write_read(int connfd) {
 		int n = 0;
 		char send_buffer[] = "Hello in Cpp";
@@ -69,3 +76,4 @@ int main(int argc, char* argv[]) {
 	c->start(server_ip, server_port); 
 	return 0;
 }
+
