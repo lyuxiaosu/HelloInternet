@@ -207,6 +207,11 @@ int main(int argc, char* argv[]) {
 	} 
 	int listen_port = atoi(argv[1]);
 	int listen_backlog = atoi(argv[2]);	
+	if (listen_port > 65535 || listen_port < 0)
+	{
+		printf("Please input valid port(0-65535)\n");
+		return 0;
+	}
 	Server* s = new Server(listen_port, listen_backlog);
 	s->start();
 	return 0;
