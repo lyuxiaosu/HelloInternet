@@ -131,6 +131,7 @@ public:
 		kdpfd = epoll_create(MAXEPOLLSIZE);
 		ev.events = EPOLLIN | EPOLLET;
 		ev.data.fd = listenfd;
+		//register event and tell the relevant file descriptor event type.
 		if (epoll_ctl(kdpfd, EPOLL_CTL_ADD, listenfd, &ev) < 0) 
 		{
 			fprintf(stderr, "epoll set insertion error: fd=%d\n", listenfd);
@@ -142,6 +143,7 @@ public:
 
 		//looping fds to monitor whether it has requests to process 
 		for (;;) {
+			//Waiting for the trigger of events
 			nfds = epoll_wait(kdpfd, events, curfds, -1);
 			if (nfds == -1)
 			{
