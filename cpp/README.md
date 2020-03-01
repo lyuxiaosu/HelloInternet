@@ -1,10 +1,10 @@
-Team Members: Xiaosu Lyu and Cuidi Wei 
+Team Members: Xiaosu Lyu, Cuidi Wei, Ziyue Li
 # HelloInternet
 Say Hello to a remote friend in all the languages!
 ## Compile server
-gcc hellosrvCpp.cpp -lstdc++ -o hellosrvCpp
+g++ -std=c++11 hellosrvCpp.cpp  -o hellosrvCpp
 ## Compile client
-gcc helloCpp.cpp -lstdc++ -o helloCpp
+g++ -std=c++11 helloCpp.cpp -o helloCpp
 ## Run
 Start server with listen port and backlog
    ```
