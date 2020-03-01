@@ -25,7 +25,15 @@ On the server platform, it will print the following infomation:
   language is  Cpp
   close client 127.0.0.1:48288
 ```
-You can use other client with other programming language to connect to this server and get the same result.
+You can use other client with other programming language to connect to this server and get the same result. For example, start the server with port 8080, and then start the python client helloPython.py in HelloInternet/python, the server will output the following message:
+```
+xiaosuGW@node0:~/HelloInternet/cpp$ ./hellosrvCpp 8080 1024
+epollserver startup,port 8080, max connection is 10000, backlog is 1024
+accepted count(1):accept form 127.0.0.1:55999
+language is  Python
+
+close client 127.0.0.1:55999
+```
 ## Create a Socket
 Use `int socket(int domain, int type, int protocol)` function to create a TCP socket in C. This will return a socket fd.
 ## Connecting to a Server
