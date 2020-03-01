@@ -19,6 +19,7 @@ using namespace std;
 #define MAXEPOLLSIZE 10000
 #define MAXLINE 1024
 
+//set nonblocking for socket
 int setnonblocking(int sockfd)
 {
     if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0)|O_NONBLOCK) == -1) {
@@ -78,6 +79,8 @@ public:
 		close(connfd);
 		return 0;
 	}
+
+	//Start listening with epoll
 	void start() {
 		int listenfd, connfd, kdpfd, nfds, n, nread, curfds,acceptCount = 0;
 		struct sockaddr_in servaddr, cliaddr;
@@ -88,13 +91,14 @@ public:
 		char buf[MAXLINE];
 
 		rt.rlim_max = rt.rlim_cur = MAXEPOLLSIZE;
+		//set resource limits
 		if (setrlimit(RLIMIT_NOFILE, &rt) == -1) 
 		{
 			perror("setrlimit error");
 			return;
 		}
 
-
+		//Listening clients with any address and port listen_port
 		bzero(&servaddr, sizeof(servaddr));
 		servaddr.sin_family = AF_INET; 
 		servaddr.sin_addr.s_addr = htonl (INADDR_ANY);
@@ -127,6 +131,7 @@ public:
 		kdpfd = epoll_create(MAXEPOLLSIZE);
 		ev.events = EPOLLIN | EPOLLET;
 		ev.data.fd = listenfd;
+		//register event and tell the relevant file descriptor event type.
 		if (epoll_ctl(kdpfd, EPOLL_CTL_ADD, listenfd, &ev) < 0) 
 		{
 			fprintf(stderr, "epoll set insertion error: fd=%d\n", listenfd);
@@ -136,7 +141,9 @@ public:
 
 		printf("epollserver startup,port %d, max connection is %d, backlog is %d\n", listen_port, MAXEPOLLSIZE, listen_backlog);
 
+		//looping fds to monitor whether it has requests to process 
 		for (;;) {
+			//Waiting for the trigger of events
 			nfds = epoll_wait(kdpfd, events, curfds, -1);
 			if (nfds == -1)
 			{
@@ -200,6 +207,11 @@ int main(int argc, char* argv[]) {
 	} 
 	int listen_port = atoi(argv[1]);
 	int listen_backlog = atoi(argv[2]);	
+	if (listen_port > 65535 || listen_port < 0)
+	{
+		printf("Please input valid port(0-65535)\n");
+		return 0;
+	}
 	Server* s = new Server(listen_port, listen_backlog);
 	s->start();
 	return 0;
